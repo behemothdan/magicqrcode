@@ -1,0 +1,40 @@
+{
+	"defaultSeverity": "error",
+	"extends": [
+		"tslint:recommended"
+	],
+	"jsRules": {
+		"max-line-length": {
+			"options": [
+				120
+			]
+		}
+	},
+	"rules": {
+		"max-line-length": {
+			"options": [
+				120
+			]
+		},
+		"indent": [
+			true,
+			"tabs"
+		],
+		"object-literal-sort-keys": true,
+		"no-console": {
+			"severity": "warning",
+			"options": [
+				"debug",
+				"info",
+				"log",
+				"time",
+				"timeEnd",
+				"trace"
+			]
+		},
+		"trailing-comma": [
+			false
+		]
+	},
+	"rulesDirectory": []
+}

@@ -1,0 +1,47 @@
+{
+	"name": "magicqrcode",
+	"version": "1.0.0",
+	"description": "The API used to generate printable QR codes for Magic deck links..",
+	"dependencies": {
+		"compression": "^1.7.4",
+		"cors": "^2.8.5",
+		"dotenv": "^16.0.2",
+		"express": "^4.18.1",
+		"nodemon": "^2.0.19"
+	},
+	"devDependencies": {
+		"@types/compression": "^1.7.2",
+		"@types/cors": "^2.8.12",
+		"@types/node": "^18.7.17",
+		"tslint": "^6.1.3",
+		"typescript": "^4.8.3"
+	},
+	"scripts": {
+		"prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+		"prestart": "npm run build",
+		"build": "tsc",
+		"start": "nodemon ./dist/server.js",
+		"test": "ts-mocha --exit src/**/*.test.ts"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/behemothdan/magicqrcode.git"
+	},
+	"keywords": [
+		"api",
+		"aws",
+		"express scaffold",
+		"express",
+		"lgs",
+		"magic the gathering",
+		"node",
+		"qr"
+	],
+	"author": "Daniel R. Gray",
+	"url": "https://lgs.events",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/behemothdan/magicqrcode/issues"
+	},
+	"homepage": "https://github.com/behemothdan/magicqrcode/wiki"
+}
