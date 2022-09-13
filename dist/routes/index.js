@@ -6,5 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const routes = (0, express_1.Router)();
 const healthcheck_1 = __importDefault(require("./healthcheck/healthcheck"));
+const root_1 = __importDefault(require("./root/root"));
 routes.get("/healthcheck", healthcheck_1.default);
+routes.get("/", root_1.default);
 exports.default = routes;

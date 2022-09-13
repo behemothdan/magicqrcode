@@ -9,6 +9,8 @@ const routes = Router();
  * with their corresponding test files.
  */
 import healthcheck from "./healthcheck/healthcheck";
+import root from "./root/root";
+
 
 /**
  * Implement the route files with our instance of router.
@@ -16,5 +18,6 @@ import healthcheck from "./healthcheck/healthcheck";
  * main server.ts file for cleanliness.
  */
 routes.get("/healthcheck", healthcheck);
+routes.get("/", root);
 
 export default routes;
