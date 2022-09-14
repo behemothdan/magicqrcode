@@ -11,7 +11,6 @@ const routes = Router();
 import healthcheck from "./healthcheck/healthcheck";
 import root from "./root/root";
 
-
 /**
  * Implement the route files with our instance of router.
  * New routes will be added here instead of within the

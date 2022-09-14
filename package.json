@@ -13,6 +13,7 @@
 		"@types/compression": "^1.7.2",
 		"@types/cors": "^2.8.12",
 		"@types/node": "^18.7.17",
+		"ts-node": "^10.9.1",
 		"tslint": "^6.1.3",
 		"typescript": "^4.8.3"
 	},
@@ -20,7 +21,7 @@
 		"prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
 		"prestart": "npm run build",
 		"build": "tsc",
-		"start": "nodemon ./dist/server.js",
+		"start": "nodemon ./src/server.ts",
 		"test": "ts-mocha --exit src/**/*.test.ts"
 	},
 	"repository": {
