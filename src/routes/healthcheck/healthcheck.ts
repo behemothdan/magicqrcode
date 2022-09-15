@@ -11,7 +11,7 @@ const router = express.Router();
  * the underscore should be removed.
  */
 router
-	.route("/healthcheck")
+	.route("/")
 	.get((_req: Request, res: Response) => {
 		return res.status(200).json({
 			message: "The API is running.",
