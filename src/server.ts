@@ -64,7 +64,10 @@ import routes from "./routes/index";
  */
 router.use("/", routes);
 
-app.use("/api", router);
+/**
+ * We will use a version tag here in case we get ambitious
+ */
+app.use("/api/v1/", router);
 
 const server = app.listen(port, (): void =>
 	// tslint:disable-next-line:no-console

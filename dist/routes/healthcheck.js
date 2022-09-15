@@ -13,12 +13,4 @@ router
         status: "success"
     });
 });
-router
-    .route("/healthcheck/test")
-    .get((_req, res) => {
-    return res.status(200).json({
-        message: "The API is running.",
-        status: "success"
-    });
-});
 exports.default = router;

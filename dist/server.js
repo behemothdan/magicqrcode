@@ -26,6 +26,6 @@ const port = process.env.PORT || 8080;
 const router = express_1.default.Router();
 const index_1 = __importDefault(require("./routes/index"));
 router.use("/", index_1.default);
-app.use("/api", router);
+app.use("/api/v1/", router);
 const server = app.listen(port, () => console.log(`🚀: API ready at http://localhost:${port}`));
 exports.default = { server, app };
