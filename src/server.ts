@@ -74,4 +74,4 @@ const server = app.listen(port, (): void =>
 	console.log(`🚀: API ready at http://localhost:${port}`)
 );
 
-export default { server, app };
+export default server;
