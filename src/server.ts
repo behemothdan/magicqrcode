@@ -40,6 +40,11 @@ const corsOptions = {
  */
 app.use(cors(corsOptions));
 
+/** Body Parser is included in expressjs so we
+ * do not to install it separately.
+ */
+app.use(express.json());
+
 /**
  * This is to Gzip files to make things even faster!
  */

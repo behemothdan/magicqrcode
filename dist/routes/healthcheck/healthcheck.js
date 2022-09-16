@@ -6,18 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 router
-    .route("/healthcheck")
+    .route("/")
     .get((_req, res) => {
     return res.status(200).json({
-        message: "The API is running.",
-        status: "success"
-    });
-});
-router
-    .route("/healthcheck/test")
-    .get((_req, res) => {
-    return res.status(200).json({
-        message: "The API is running.",
+        message: "We've successfully hit the health check endpoint.",
         status: "success"
     });
 });

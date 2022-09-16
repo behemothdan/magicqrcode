@@ -28,4 +28,4 @@ const index_1 = __importDefault(require("./routes/index"));
 router.use("/", index_1.default);
 app.use("/api/v1/", router);
 const server = app.listen(port, () => console.log(`🚀: API ready at http://localhost:${port}`));
-exports.default = { server, app };
+exports.default = server;
