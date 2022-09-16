@@ -8,7 +8,7 @@ router
 	.route("/")
 	.get((_req: Request, res: Response) => {
 		return res.status(200).json({
-			message: "We've successfully hit the health check endpoint.",
+			message: "We've successfully hit the generateqr GET endpoint.",
 			status: "success"
 		});
 	})
