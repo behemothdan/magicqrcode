@@ -6,8 +6,8 @@ const { expect } = chai;
 chai.use(chaiHttp);
 chai.should();
 
-describe("Magic QR Code API Testing", () => {
-	it("You've reached the generic endpoint for the API", (done) => {
+describe("Access to root file endpoint", () => {
+	it("You've reached theroot GET endpoint", (done) => {
 		chai
 			.request(server)
 			.get("/api/v1")

@@ -14,7 +14,7 @@ router
 	.route("/")
 	.get((_req: Request, res: Response) => {
 		return res.status(200).json({
-			message: "The API is running.",
+			message: "We've successfully hit the health check endpoint.",
 			status: "success"
 		});
 	})
