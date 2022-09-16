@@ -7,7 +7,7 @@ chai.use(chaiHttp);
 chai.should();
 
 describe("Access to root file endpoint", () => {
-	it("You've reached theroot GET endpoint", (done) => {
+	it("You've reached the root GET endpoint", (done) => {
 		chai
 			.request(server)
 			.get("/api/v1")

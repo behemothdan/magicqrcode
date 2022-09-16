@@ -5,8 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const routes = (0, express_1.Router)();
+const generateqr_1 = __importDefault(require("./generateqr/generateqr"));
 const healthcheck_1 = __importDefault(require("./healthcheck/healthcheck"));
 const root_1 = __importDefault(require("./root/root"));
+routes.use("/generateqr", generateqr_1.default);
 routes.use("/healthcheck", healthcheck_1.default);
 routes.use("/", root_1.default);
 exports.default = routes;

@@ -21,6 +21,7 @@ const corsOptions = {
     }
 };
 app.use((0, cors_1.default)(corsOptions));
+app.use(express_1.default.json());
 app.use((0, compression_1.default)());
 const port = process.env.PORT || 8080;
 const router = express_1.default.Router();

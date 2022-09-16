@@ -13,9 +13,27 @@ router
 		});
 	})
 	.post(jsonParser, (req: Request, res: Response) => {
-		qrcode.toDataURL(req.body.url).then(url => {
-			res.send(url);
+		const urlArray = req.body.url.split(",");
+		const arrayOfQRCodes: string[] = [];
+
+		/**
+		 * Loop over each submitted decklist link
+		 * and generate individual QR codes for each one.
+		 */
+		urlArray.forEach((deckUrl: string) => {
+			qrcode.toDataURL(deckUrl).then(url => {
+				arrayOfQRCodes.push(url);
+				console.log(arrayOfQRCodes.length);
+			})
 		})
+
+		/**
+		 * Eventually this will be used to place all
+		 * the generated images within a printable
+		 * file or template for the user.
+		 */
+		console.log(arrayOfQRCodes);
+		res.send(arrayOfQRCodes);
 	})
 
 export default router;
