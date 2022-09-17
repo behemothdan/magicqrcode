@@ -1,5 +1,6 @@
 import express, { Response, Request } from "express";
 import qrcode from "qrcode";
+import { validateUrls } from '../../utils';
 
 const router = express.Router();
 const jsonParser = express.json();
@@ -23,9 +24,11 @@ router
 		 * So we use this map instead.
 		 */
 		await Promise.all(urlArray.map(async (deckUrl: string) => {
-			await qrcode.toDataURL(deckUrl).then(url => {
-				arrayOfQRCodes.push(url);
-			})
+			if(validateUrls(deckUrl)) {
+				await qrcode.toDataURL(deckUrl).then(url => {
+					arrayOfQRCodes.push(url);
+				})
+			};
 		}))
 
 		/**
