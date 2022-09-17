@@ -24,7 +24,7 @@ router
 		 * So we use this map instead.
 		 */
 		await Promise.all(urlArray.map(async (deckUrl: string) => {
-			if(validateUrls(deckUrl)) {
+			if (validateUrls(deckUrl)) {
 				await qrcode.toDataURL(deckUrl).then(url => {
 					arrayOfQRCodes.push(url);
 				})
@@ -36,7 +36,11 @@ router
 		 * the generated images within a printable
 		 * file or template for the user.
 		 */
-		res.send(arrayOfQRCodes);
+		if (arrayOfQRCodes.length > 0) {
+			res.send(arrayOfQRCodes);
+		} else {
+			res.send("No QR codes generated.");
+		}
 	})
 
 export default router;
