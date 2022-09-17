@@ -6,6 +6,12 @@ const { expect } = chai;
 chai.use(chaiHttp);
 chai.should();
 
+/**
+ * In these tests, the definition of a valid URL is one
+ * that passes our validateUrls RegEx statement indicating
+ * that it is structured properly. It may not actually lead
+ * to a real website but they could.
+ */
 describe("Testing generateqr endpoints", () => {
 	it("You've reached the generateqr GET endpoint for the API", (done) => {
 		chai
