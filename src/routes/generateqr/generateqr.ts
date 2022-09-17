@@ -12,27 +12,27 @@ router
 			status: "success"
 		});
 	})
-	.post(jsonParser, (req: Request, res: Response) => {
+	.post(jsonParser, async (req: Request, res: Response) => {
 		const urlArray = req.body.url.split(",");
 		const arrayOfQRCodes: string[] = [];
 
 		/**
 		 * Loop over each submitted decklist link
 		 * and generate individual QR codes for each one.
+		 * Remember that forEach loops are bad for async code.
+		 * So we use this map instead.
 		 */
-		urlArray.forEach((deckUrl: string) => {
-			qrcode.toDataURL(deckUrl).then(url => {
+		await Promise.all(urlArray.map(async (deckUrl: string) => {
+			await qrcode.toDataURL(deckUrl).then(url => {
 				arrayOfQRCodes.push(url);
-				console.log(arrayOfQRCodes.length);
 			})
-		})
+		}))
 
 		/**
 		 * Eventually this will be used to place all
 		 * the generated images within a printable
 		 * file or template for the user.
 		 */
-		console.log(arrayOfQRCodes);
 		res.send(arrayOfQRCodes);
 	})
 
