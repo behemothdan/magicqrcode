@@ -24,7 +24,7 @@ router
 		 * The name could be set dynamically if we wanted but I don't
 		 * think it is important for this implementation.
 		 */
-		const qrCodeDoc = new PDFDocument({ size: 'A4', margin: 50, bufferPages: true });
+		const qrCodeDoc = new PDFDocument({ size: 'A4', margin: 15, bufferPages: true });
 		const stream = res.writeHead(200, {
 			'Content-Type': 'application/pdf',
 			'Content-disposition': `attachment;filename:magicqrcodes.pdf`
@@ -36,10 +36,11 @@ router
 		 * Remember that forEach loops are bad for async code.
 		 * So we use this map instead.
 		 */
-		await Promise.all(urlArray.map(async (deckUrl: string) => {
+		await Promise.all(urlArray.map(async (deckUrl: string, index: any) => {
 			if (validateUrls(deckUrl)) {
 				await qrcode.toDataURL(deckUrl).then(url => {
-					qrCodeDoc.image(url, 250, 250);
+					qrCodeDoc.image(url, 10 + (index * 144), 15, { fit: [144, 144] })
+						.text("Yawgmoth, Thrawn Physician", 10 + (index * 144), 150, { width: 144, align: 'center' });
 					arrayOfQRCodes.push(url);
 				})
 			};
