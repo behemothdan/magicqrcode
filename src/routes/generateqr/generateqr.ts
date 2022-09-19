@@ -1,6 +1,7 @@
 import express, { Response, Request } from "express";
 import qrcode from "qrcode";
-import { validateUrls } from '../../utils';
+import { validateUrls, feedbackMessages } from '../../utils';
+import PDFDocument from "pdfkit";
 
 const router = express.Router();
 const jsonParser = express.json();
@@ -18,6 +19,18 @@ router
 		const arrayOfQRCodes: string[] = [];
 
 		/**
+		 * This instantiates our blank PDF canvas at a printable size.
+		 * We also set some header content like file type, file name, etc.
+		 * The name could be set dynamically if we wanted but I don't
+		 * think it is important for this implementation.
+		 */
+		const qrCodeDoc = new PDFDocument({ size: 'A4', margin: 50, bufferPages: true });
+		const stream = res.writeHead(200, {
+			'Content-Type': 'application/pdf',
+			'Content-disposition': `attachment;filename:magicqrcodes.pdf`
+		})
+
+		/**
 		 * Loop over each submitted decklist link
 		 * and generate individual QR codes for each one.
 		 * Remember that forEach loops are bad for async code.
@@ -26,6 +39,7 @@ router
 		await Promise.all(urlArray.map(async (deckUrl: string) => {
 			if (validateUrls(deckUrl)) {
 				await qrcode.toDataURL(deckUrl).then(url => {
+					qrCodeDoc.image(url, 250, 250);
 					arrayOfQRCodes.push(url);
 				})
 			};
@@ -37,9 +51,13 @@ router
 		 * file or template for the user.
 		 */
 		if (arrayOfQRCodes.length > 0) {
-			res.send(arrayOfQRCodes);
+			qrCodeDoc.on('data', (chunk) => stream.write(chunk));
+			qrCodeDoc.on('end', () => stream.end());
+			qrCodeDoc.end();
+			// qrCodeDoc.pipe(res);
+			// res.send(arrayOfQRCodes);
 		} else {
-			res.send("No QR codes generated.");
+			res.send(feedbackMessages.noQrCodesGenerated);
 		}
 	})
 

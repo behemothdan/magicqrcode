@@ -4,6 +4,7 @@ exports.feedbackMessages = void 0;
 exports.feedbackMessages = {
     loading: `Attempting to parse deck URLs.`,
     loadingFailed: `Unable to load generated QR codes.`,
+    noQrCodesGenerated: `No QR codes were generated. Please check the URLs and try again.`,
     parsingError: `Unable to parse list of deck URLs. Please check the formatting and try again.`,
     qrGenerationFailed: `Unable to properly generate QR codes for one or more deck lists.`
 };

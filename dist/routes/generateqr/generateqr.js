@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const qrcode_1 = __importDefault(require("qrcode"));
 const utils_1 = require("../../utils");
+const pdfkit_1 = __importDefault(require("pdfkit"));
+const fs_1 = __importDefault(require("fs"));
 const router = express_1.default.Router();
 const jsonParser = express_1.default.json();
 router
@@ -28,9 +30,12 @@ router
     .post(jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const urlArray = req.body.url.split(",");
     const arrayOfQRCodes = [];
+    const qrCodeDoc = new pdfkit_1.default();
+    qrCodeDoc.pipe(fs_1.default.createWriteStream('qrcodes.pdf'));
     yield Promise.all(urlArray.map((deckUrl) => __awaiter(void 0, void 0, void 0, function* () {
         if ((0, utils_1.validateUrls)(deckUrl)) {
             yield qrcode_1.default.toDataURL(deckUrl).then(url => {
+                fs_1.default.writeFileSync("qrcode.png", url);
                 arrayOfQRCodes.push(url);
             });
         }
@@ -40,8 +45,7 @@ router
         res.send(arrayOfQRCodes);
     }
     else {
-        console.log(arrayOfQRCodes.length);
-        res.send(null);
+        res.send(utils_1.feedbackMessages.noQrCodesGenerated);
     }
 }));
 exports.default = router;
