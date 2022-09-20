@@ -40,14 +40,15 @@ router
 		 */
 		await Promise.all(req.body.decklists.map(async (deckInfo: qrrequest, index: any) => {
 			if (validateUrls(deckInfo.url)) {
-				await qrcode.toDataURL(deckInfo.url).then(url => {
+				await qrcode.toDataURL(deckInfo.url, {color: {dark: deckInfo.color}}).then(url => {
 					qrCodeDoc.image(url,
 						10 + ((index % 4) * 144), // Horizontal Placement
-						(15 + (Math.floor(index/4) * 165)), // Vertical Placement
+						(15 + (Math.floor(index/4) * 160)), // Vertical Placement
 						{ fit: [144, 144] })
+					.fillColor(deckInfo.color ? deckInfo.color : "#000000")
 					.text(deckInfo.commander,
 						10 + ((index % 4) * 144), // Horizontal Placement
-						(150 + (Math.floor(index/4) * 165)), // Vertical Placement
+						(150 + (Math.floor(index/4) * 160)), // Vertical Placement
 						{ width: 144, align: 'center' });
 				})
 			};

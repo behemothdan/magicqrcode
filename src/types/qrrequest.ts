@@ -1,4 +1,5 @@
 export type qrrequest = {
 	url: string
-	commander: string
+	commander: string,
+	color?: string
 }
