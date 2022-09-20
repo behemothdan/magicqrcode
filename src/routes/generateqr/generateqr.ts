@@ -42,12 +42,12 @@ router
 			if (validateUrls(deckUrl)) {
 				await qrcode.toDataURL(deckUrl).then(url => {
 					qrCodeDoc.image(url,
-						10 + (index * 144), // Horizontal Placement
-						(15 + (Math.floor(index/4) * 144)), // Vertical Placement
+						10 + ((index % 4) * 144), // Horizontal Placement
+						(15 + (Math.floor(index/4) * 165)), // Vertical Placement
 						{ fit: [144, 144] })
-					.text("Yawgmoth, Thrawn Physician",
-						10 + (index * 144), // Horizontal Placement
-						(150 + (Math.floor(index/4) * 144)), // Vertical Placement
+					.text("Yawgmoth, Thran Physician",
+						10 + ((index % 4) * 144), // Horizontal Placement
+						(150 + (Math.floor(index/4) * 165)), // Vertical Placement
 						{ width: 144, align: 'center' });
 					arrayOfQRCodes.push(url);
 				})
