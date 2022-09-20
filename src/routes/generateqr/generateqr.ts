@@ -1,7 +1,8 @@
-import express, { Response, Request } from "express";
-import qrcode from "qrcode";
+import { qrrequest } from "../../types/qrrequest";
 import { validateUrls, feedbackMessages } from '../../utils';
+import express, { Response, Request } from "express";
 import PDFDocument from "pdfkit";
+import qrcode from "qrcode";
 
 const router = express.Router();
 const jsonParser = express.json();
@@ -15,9 +16,6 @@ router
 		});
 	})
 	.post(jsonParser, async (req: Request, res: Response) => {
-		const urlArray = req.body.url.split(",");
-		const arrayOfQRCodes: string[] = [];
-
 		/**
 		 * This instantiates our blank PDF canvas at a printable size.
 		 * We also set some header content like file type, file name, etc.
@@ -37,19 +35,20 @@ router
 		 * So we use this map instead.
 		 * Math notes for height: We divide the index by 4 and floor it
 		 * and multiply by 144 to place it vertically.
+		 * Math notes for width: Divide the index by 4 (the width fit on the page)
+		 * using the mod operator and multiply by 144
 		 */
-		await Promise.all(urlArray.map(async (deckUrl: string, index: any) => {
-			if (validateUrls(deckUrl)) {
-				await qrcode.toDataURL(deckUrl).then(url => {
+		await Promise.all(req.body.decklists.map(async (deckInfo: qrrequest, index: any) => {
+			if (validateUrls(deckInfo.url)) {
+				await qrcode.toDataURL(deckInfo.url).then(url => {
 					qrCodeDoc.image(url,
 						10 + ((index % 4) * 144), // Horizontal Placement
 						(15 + (Math.floor(index/4) * 165)), // Vertical Placement
 						{ fit: [144, 144] })
-					.text("Yawgmoth, Thran Physician",
+					.text(deckInfo.commander,
 						10 + ((index % 4) * 144), // Horizontal Placement
 						(150 + (Math.floor(index/4) * 165)), // Vertical Placement
 						{ width: 144, align: 'center' });
-					arrayOfQRCodes.push(url);
 				})
 			};
 		}))
@@ -59,7 +58,7 @@ router
 		 * the generated images within a printable
 		 * file or template for the user.
 		 */
-		if (arrayOfQRCodes.length > 0) {
+		if (req.body.decklists.length > 0) {
 			qrCodeDoc.on('data', (chunk) => stream.write(chunk));
 			qrCodeDoc.on('end', () => stream.end());
 			qrCodeDoc.end();
