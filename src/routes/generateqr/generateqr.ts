@@ -35,12 +35,20 @@ router
 		 * and generate individual QR codes for each one.
 		 * Remember that forEach loops are bad for async code.
 		 * So we use this map instead.
+		 * Math notes for height: We divide the index by 4 and floor it
+		 * and multiply by 144 to place it vertically.
 		 */
 		await Promise.all(urlArray.map(async (deckUrl: string, index: any) => {
 			if (validateUrls(deckUrl)) {
 				await qrcode.toDataURL(deckUrl).then(url => {
-					qrCodeDoc.image(url, 10 + (index * 144), 15, { fit: [144, 144] })
-						.text("Yawgmoth, Thrawn Physician", 10 + (index * 144), 150, { width: 144, align: 'center' });
+					qrCodeDoc.image(url,
+						10 + (index * 144), // Horizontal Placement
+						(15 + (Math.floor(index/4) * 144)), // Vertical Placement
+						{ fit: [144, 144] })
+					.text("Yawgmoth, Thrawn Physician",
+						10 + (index * 144), // Horizontal Placement
+						(150 + (Math.floor(index/4) * 144)), // Vertical Placement
+						{ width: 144, align: 'center' });
 					arrayOfQRCodes.push(url);
 				})
 			};
