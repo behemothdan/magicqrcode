@@ -42,6 +42,10 @@ router
 		await Promise.all(req.body.decklists.map(async (deckInfo: qrrequest, index: any) => {
 			if (validateUrls(deckInfo.url)) {
 				await qrcode.toDataURL(deckInfo.url, {color: {dark: deckInfo.color}}).then(url => {
+					if((144 + qrCodeDoc.y + qrCodeDoc.currentLineHeight(true)) > 890) {
+						qrCodeDoc.addPage();
+						qrCodeDoc.on('pageAdded', () => qrCodeDoc.switchToPage(qrCodeDoc.bufferedPageRange().count - 1));
+					}
 					qrCodeDoc.image(url,
 						calculateHorizontalPlacement(index),
 						calculateVerticalPlacement(index),
@@ -52,6 +56,8 @@ router
 						calculateVerticalPlacement(index, true),
 						{ width: 144, align: 'center' });
 				})
+			} else {
+				res.send(feedbackMessages.qrGenerationFailed);
 			};
 		}))
 
