@@ -51,7 +51,7 @@ router
 						calculateVerticalPlacement(index),
 						{ fit: [144, 144] })
 					.fillColor(deckInfo.color ? deckInfo.color : "#000000")
-					.text(deckInfo.commander,
+					.text((deckInfo.commander ? deckInfo.commander : ""),
 						calculateHorizontalPlacement(index),
 						calculateVerticalPlacement(index, true),
 						{ width: 144, align: 'center' });
