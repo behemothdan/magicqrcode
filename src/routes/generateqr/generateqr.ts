@@ -27,7 +27,7 @@ router
 		 * The name could be set dynamically if we wanted but I don't
 		 * think it is important for this implementation.
 		 */
-		const qrCodeDoc = new PDFDocument({ size: 'A4', margin: 15, bufferPages: true });
+		const qrCodeDoc = new PDFDocument({ size: 'LETTER', margin: 15, bufferPages: true });
 		const stream = res.writeHead(200, {
 			'Content-Type': 'application/pdf',
 			'Content-disposition': `attachment;filename:magicqrcodes.pdf`
@@ -38,10 +38,6 @@ router
 		 * and generate individual QR codes for each one.
 		 * Remember that forEach loops are bad for async code.
 		 * So we use this map instead.
-		 * Math notes for height: We divide the index by 4 and floor it
-		 * and multiply by 144 to place it vertically.
-		 * Math notes for width: Divide the index by 4 (the width fit on the page)
-		 * using the mod operator and multiply by 144
 		 */
 		await Promise.all(req.body.decklists.map(async (deckInfo: qrrequest, index: any) => {
 			if (validateUrls(deckInfo.url)) {

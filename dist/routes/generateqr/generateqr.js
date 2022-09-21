@@ -12,11 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const qrcode_1 = __importDefault(require("qrcode"));
 const utils_1 = require("../../utils");
+const express_1 = __importDefault(require("express"));
 const pdfkit_1 = __importDefault(require("pdfkit"));
-const fs_1 = __importDefault(require("fs"));
+const qrcode_1 = __importDefault(require("qrcode"));
 const router = express_1.default.Router();
 const jsonParser = express_1.default.json();
 router
@@ -28,21 +27,25 @@ router
     });
 })
     .post(jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const urlArray = req.body.url.split(",");
-    const arrayOfQRCodes = [];
-    const qrCodeDoc = new pdfkit_1.default();
-    qrCodeDoc.pipe(fs_1.default.createWriteStream('qrcodes.pdf'));
-    yield Promise.all(urlArray.map((deckUrl) => __awaiter(void 0, void 0, void 0, function* () {
-        if ((0, utils_1.validateUrls)(deckUrl)) {
-            yield qrcode_1.default.toDataURL(deckUrl).then(url => {
-                fs_1.default.writeFileSync("qrcode.png", url);
-                arrayOfQRCodes.push(url);
+    const qrCodeDoc = new pdfkit_1.default({ size: 'LETTER', margin: 15, bufferPages: true });
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-disposition': `attachment;filename:magicqrcodes.pdf`
+    });
+    yield Promise.all(req.body.decklists.map((deckInfo, index) => __awaiter(void 0, void 0, void 0, function* () {
+        if ((0, utils_1.validateUrls)(deckInfo.url)) {
+            yield qrcode_1.default.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {
+                qrCodeDoc.image(url, (0, utils_1.calculateHorizontalPlacement)(index), (0, utils_1.calculateVerticalPlacement)(index), { fit: [144, 144] })
+                    .fillColor(deckInfo.color ? deckInfo.color : "#000000")
+                    .text((deckInfo.commander ? deckInfo.commander : ""), (0, utils_1.calculateHorizontalPlacement)(index), (0, utils_1.calculateVerticalPlacement)(index, true), { width: 144, align: 'center' });
             });
         }
         ;
     })));
-    if (arrayOfQRCodes.length > 0) {
-        res.send(arrayOfQRCodes);
+    if (req.body.decklists.length > 0) {
+        qrCodeDoc.on('data', (chunk) => stream.write(chunk));
+        qrCodeDoc.on('end', () => stream.end());
+        qrCodeDoc.end();
     }
     else {
         res.send(utils_1.feedbackMessages.noQrCodesGenerated);
