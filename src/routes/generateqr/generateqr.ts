@@ -1,5 +1,10 @@
 import { qrrequest } from "../../types/qrrequest";
-import { validateUrls, feedbackMessages } from '../../utils';
+import {
+	calculateHorizontalPlacement,
+	calculateVerticalPlacement,
+	feedbackMessages,
+	validateUrls
+} from '../../utils';
 import express, { Response, Request } from "express";
 import PDFDocument from "pdfkit";
 import qrcode from "qrcode";
@@ -42,13 +47,13 @@ router
 			if (validateUrls(deckInfo.url)) {
 				await qrcode.toDataURL(deckInfo.url, {color: {dark: deckInfo.color}}).then(url => {
 					qrCodeDoc.image(url,
-						10 + ((index % 4) * 144), // Horizontal Placement
-						(15 + (Math.floor(index/4) * 160)), // Vertical Placement
+						calculateHorizontalPlacement(index),
+						calculateVerticalPlacement(index),
 						{ fit: [144, 144] })
 					.fillColor(deckInfo.color ? deckInfo.color : "#000000")
 					.text(deckInfo.commander,
-						10 + ((index % 4) * 144), // Horizontal Placement
-						(150 + (Math.floor(index/4) * 160)), // Vertical Placement
+						calculateHorizontalPlacement(index),
+						calculateVerticalPlacement(index, true),
 						{ width: 144, align: 'center' });
 				})
 			};
@@ -63,8 +68,6 @@ router
 			qrCodeDoc.on('data', (chunk) => stream.write(chunk));
 			qrCodeDoc.on('end', () => stream.end());
 			qrCodeDoc.end();
-			// qrCodeDoc.pipe(res);
-			// res.send(arrayOfQRCodes);
 		} else {
 			res.send(feedbackMessages.noQrCodesGenerated);
 		}
