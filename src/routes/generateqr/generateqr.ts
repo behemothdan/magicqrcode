@@ -51,6 +51,12 @@ router
 						qrCodeDoc.addPage();
 						qrCodeDoc.on('pageAdded', () => qrCodeDoc.switchToPage(qrCodeDoc.bufferedPageRange().count - 1));
 					}
+					/**
+					 * Place the generated QR code on the page as well as line up the optional
+					 * text information along with the appropriate QR code, using our placement
+					 * functions to determine where they should live on the page to create
+					 * an optimized sheet for printing.
+					 */
 					qrCodeDoc.image(url,
 						calculateHorizontalPlacement(index - numberOfInvalidUrls),
 						calculateVerticalPlacement(index - numberOfInvalidUrls),
@@ -62,8 +68,6 @@ router
 						{ width: 144, align: 'center' });
 						numberOfValidUrls++;
 				})
-			} else {
-				numberOfInvalidUrls++;
 			}
 		}))
 
