@@ -32,6 +32,7 @@ router
 		 * number will remain zero and return the message about no QR codes.
 		 */
 		let numberOfValidUrls: number = 0;
+		let numberOfInvalidUrls: number = 0;
 
 		/**
 		 * Loop over each submitted decklist link
@@ -51,16 +52,18 @@ router
 						qrCodeDoc.on('pageAdded', () => qrCodeDoc.switchToPage(qrCodeDoc.bufferedPageRange().count - 1));
 					}
 					qrCodeDoc.image(url,
-						calculateHorizontalPlacement(index),
-						calculateVerticalPlacement(index),
+						calculateHorizontalPlacement(index - numberOfInvalidUrls),
+						calculateVerticalPlacement(index - numberOfInvalidUrls),
 						{ fit: [144, 144] })
 					.fillColor(deckInfo.color ? deckInfo.color : "#000000")
 					.text((deckInfo.commander ? deckInfo.commander : ""),
-						calculateHorizontalPlacement(index),
-						calculateVerticalPlacement(index, true),
+						calculateHorizontalPlacement(index - numberOfInvalidUrls),
+						calculateVerticalPlacement(index - numberOfInvalidUrls, true),
 						{ width: 144, align: 'center' });
 						numberOfValidUrls++;
 				})
+			} else {
+				numberOfInvalidUrls++;
 			}
 		}))
 
