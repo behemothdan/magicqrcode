@@ -13,7 +13,10 @@ const router = express.Router();
 router
 	.route("/")
 	.get((_req: Request, res: Response) => {
-		return res.send("The API is running.");
+		return res.status(200).json({
+			message: "We've successfully hit the health check endpoint.",
+			status: "success"
+		});
 	})
 
 export default router;

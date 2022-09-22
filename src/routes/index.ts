@@ -8,13 +8,17 @@ const routes = Router();
  * in their own directory along
  * with their corresponding test files.
  */
+import generateqr from "./generateqr/generateqr";
 import healthcheck from "./healthcheck/healthcheck";
+import root from "./root/root";
 
 /**
  * Implement the route files with our instance of router.
  * New routes will be added here instead of within the
  * main server.ts file for cleanliness.
  */
-routes.get("/healthcheck", healthcheck);
+routes.use("/generateqr", generateqr);
+routes.use("/healthcheck", healthcheck);
+routes.use("/", root);
 
 export default routes;
