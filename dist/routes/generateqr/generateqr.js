@@ -29,6 +29,8 @@ router
     .post(jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const qrCodeDoc = new pdfkit_1.default({ size: 'LETTER', margin: 15, bufferPages: true });
     let numberOfValidUrls = 0;
+    const cleanedUrlArray = (0, utils_1.cleanDecklistArray)(req.body.decklists);
+    console.log(cleanedUrlArray);
     yield Promise.all(req.body.decklists.map((deckInfo, index) => __awaiter(void 0, void 0, void 0, function* () {
         if ((0, utils_1.validateUrls)(deckInfo.url) !== null) {
             yield qrcode_1.default.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {

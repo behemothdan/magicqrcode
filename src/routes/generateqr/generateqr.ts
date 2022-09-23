@@ -2,6 +2,7 @@ import { qrrequest } from "../../types/qrrequest";
 import {
 	calculateHorizontalPlacement,
 	calculateVerticalPlacement,
+	cleanDecklistArray,
 	feedbackMessages,
 	validateUrls
 } from '../../utils';
@@ -31,8 +32,13 @@ router
 		 * valid URL and was successfully added to a PDF. If all of them fail, then this
 		 * number will remain zero and return the message about no QR codes.
 		 */
-		let numberOfValidUrls: number = 0;
-		let numberOfInvalidUrls: number = 0;
+		let numberOfValidUrls = 0;
+
+		/**
+		 * Cleans the body of the POST request in place by calling our
+		 * helper function cleanDecklistArray
+		 */
+		cleanDecklistArray(req.body.decklists);
 
 		/**
 		 * Loop over each submitted decklist link
@@ -40,14 +46,14 @@ router
 		 * Remember that forEach loops are bad for async code.
 		 * So we use this map instead.
 		 */
-		await Promise.all(req.body.decklists.map(async (deckInfo: qrrequest, index: any) => {
+		await Promise.all(req.body.decklists.map(async (deckInfo: qrrequest, index: number) => {
 			if (validateUrls(deckInfo.url) !== null) {
-				await qrcode.toDataURL(deckInfo.url, {color: {dark: deckInfo.color}}).then(url => {
+				await qrcode.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {
 					/**
 					 * This handles moving to multiple pages if the QR code is going to get
 					 * cut off on the bottom of the current page.
 					 */
-					if((144 + qrCodeDoc.y + qrCodeDoc.currentLineHeight(true)) > 890) {
+					if ((144 + qrCodeDoc.y + qrCodeDoc.currentLineHeight(true)) > 890) {
 						qrCodeDoc.addPage();
 						qrCodeDoc.on('pageAdded', () => qrCodeDoc.switchToPage(qrCodeDoc.bufferedPageRange().count - 1));
 					}
@@ -58,15 +64,15 @@ router
 					 * an optimized sheet for printing.
 					 */
 					qrCodeDoc.image(url,
-						calculateHorizontalPlacement(index - numberOfInvalidUrls),
-						calculateVerticalPlacement(index - numberOfInvalidUrls),
+						calculateHorizontalPlacement(index),
+						calculateVerticalPlacement(index),
 						{ fit: [144, 144] })
-					.fillColor(deckInfo.color ? deckInfo.color : "#000000")
-					.text((deckInfo.commander ? deckInfo.commander : ""),
-						calculateHorizontalPlacement(index - numberOfInvalidUrls),
-						calculateVerticalPlacement(index - numberOfInvalidUrls, true),
-						{ width: 144, align: 'center' });
-						numberOfValidUrls++;
+						.fillColor(deckInfo.color ? deckInfo.color : "#000000")
+						.text((deckInfo.commander ? deckInfo.commander : ""),
+							calculateHorizontalPlacement(index),
+							calculateVerticalPlacement(index, true),
+							{ width: 144, align: 'center' });
+					numberOfValidUrls++;
 				})
 			}
 		}))
