@@ -57,7 +57,7 @@ describe("Testing array cleaning methods", () => {
 		}
 		expect(cleanDecklistArray(deckListArray.decklists)).to.have.length(1);
 	})
-	it("You've cleaned an array of all invalid URL", () => {
+	it("You've cleaned an array with all invalid URL", () => {
 		const deckListArrayNoValidUrls = {
 			"decklists": [
 				{
@@ -72,5 +72,49 @@ describe("Testing array cleaning methods", () => {
 			]
 		}
 		expect(cleanDecklistArray(deckListArrayNoValidUrls.decklists)).to.have.length(0);
+	});
+	it("You've cleaned an array that started with 3 invalid URLs", () => {
+		const deckListArrayNoValidUrls = {
+			"decklists": [
+				{
+					"color": "#FF0000",
+					"commander": "A Broken Commander",
+					"url": "Bad URL Number 1 Hahaha!"
+				},
+				{
+					"commander": "Yawgmoth, Thran Physician",
+					"url": "This is going to be 0 if it passes"
+				},
+				{
+					"color": "#FF0000",
+					"commander": "A Broken Commander",
+					"url": "hahaIamnotaURL"
+				},
+				{
+					"commander": "Yawgmoth, Thran Physician",
+					"url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g"
+				}
+			]
+		}
+		expect(cleanDecklistArray(deckListArrayNoValidUrls.decklists)).to.have.length(1);
+	});
+	it("You've cleaned no elements since all URLs were valid", () => {
+		const deckListArrayNoValidUrls = {
+			"decklists": [
+				{
+					"commander": "Yawgmoth, Thran Physician 1",
+					"url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g"
+				},
+				{
+					"commander": "Yawgmoth, Thran Physician 2",
+					"url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g"
+				},
+				{
+					"commander": "Yawgmoth, Thran Physician 3",
+					"url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g"
+				}
+			]
+		}
+		expect(cleanDecklistArray(deckListArrayNoValidUrls.decklists)).to.have.length(3);
 	});
 })
