@@ -1,6 +1,7 @@
 {
 	"name": "magicqrcode",
 	"version": "1.0.0",
+	"private": true,
 	"description": "The API used to generate printable QR codes for Magic deck links..",
 	"dependencies": {
 		"compression": "^1.7.4",
