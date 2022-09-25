@@ -57,7 +57,7 @@ describe("Testing array cleaning methods", () => {
 		}
 		expect(cleanDecklistArray(deckListArray.decklists)).to.have.length(1);
 	})
-	it("You've cleaned an array with all invalid URL", () => {
+	it("You've cleaned an array with all invalid URLs", () => {
 		const deckListArrayNoValidUrls = {
 			"decklists": [
 				{
