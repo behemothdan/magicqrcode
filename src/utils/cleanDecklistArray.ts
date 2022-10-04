@@ -7,7 +7,7 @@ import { qrrequest } from "../types/qrrequest";
  * But using this function before we do QR placement
  * we can guarantee there are no invalid URLs in the array.
  * @param decklistArray
- * @returns Cleaned array of deck lists
+ * @returns Array of deck lists after removing entries with invalid URLs
  */
 export function cleanDecklistArray(decklistArray: any[]) {
 	return decklistArray.filter((deckInfo: qrrequest) => validateUrls(deckInfo.url) !== null);

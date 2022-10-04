@@ -35,10 +35,9 @@ router
 		let numberOfValidUrls = 0;
 
 		/**
-		 * Cleans the body of the POST request in place by calling our
-		 * helper function cleanDecklistArray
+		 * Cleans the body of the POST request by calling our helper function cleanDecklistArray
 		 */
-		cleanDecklistArray(req.body.decklists);
+		const cleanedDecklists = cleanDecklistArray(req.body.decklists);
 
 		/**
 		 * Loop over each submitted decklist link
@@ -46,7 +45,7 @@ router
 		 * Remember that forEach loops are bad for async code.
 		 * So we use this map instead.
 		 */
-		await Promise.all(req.body.decklists.map(async (deckInfo: qrrequest, index: number) => {
+		await Promise.all(cleanedDecklists.map(async (deckInfo: qrrequest, index: number) => {
 			if (validateUrls(deckInfo.url) !== null) {
 				await qrcode.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {
 					/**
