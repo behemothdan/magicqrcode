@@ -90,7 +90,8 @@ router
 			qrCodeDoc.on('end', () => stream.end());
 			qrCodeDoc.end();
 		} else {
-			res.send(feedbackMessages.noQrCodesGenerated);
+			res.statusMessage = "No QR codes generated";
+			res.status(200).send({'feedback': feedbackMessages.noQrCodesGenerated});
 		}
 	})
 
