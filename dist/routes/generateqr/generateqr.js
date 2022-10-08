@@ -29,8 +29,8 @@ router
     .post(jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const qrCodeDoc = new pdfkit_1.default({ size: 'LETTER', margin: 15, bufferPages: true });
     let numberOfValidUrls = 0;
-    (0, utils_1.cleanDecklistArray)(req.body.decklists);
-    yield Promise.all(req.body.decklists.map((deckInfo, index) => __awaiter(void 0, void 0, void 0, function* () {
+    const cleanedDecklists = (0, utils_1.cleanDecklistArray)(req.body.decklists);
+    yield Promise.all(cleanedDecklists.map((deckInfo, index) => __awaiter(void 0, void 0, void 0, function* () {
         if ((0, utils_1.validateUrls)(deckInfo.url) !== null) {
             yield qrcode_1.default.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {
                 if ((144 + qrCodeDoc.y + qrCodeDoc.currentLineHeight(true)) > 890) {
@@ -54,7 +54,8 @@ router
         qrCodeDoc.end();
     }
     else {
-        res.send(utils_1.feedbackMessages.noQrCodesGenerated);
+        res.statusMessage = "No QR codes generated";
+        res.status(200).send({ 'feedback': utils_1.feedbackMessages.noQrCodesGenerated });
     }
 }));
 exports.default = router;

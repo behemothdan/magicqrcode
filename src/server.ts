@@ -2,6 +2,7 @@ import compression from "compression";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import serverless from 'serverless-http';
 
 /**
  * Define our application and the
@@ -78,5 +79,6 @@ const server = app.listen(port, (): void =>
 	// tslint:disable-next-line:no-console
 	console.log(`🚀: API ready at http://localhost:${port}`)
 );
-
 export default server;
+
+module.exports.handler = serverless(app);

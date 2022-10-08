@@ -10,7 +10,8 @@
 		"express": "^4.18.1",
 		"nodemon": "^2.0.19",
 		"pdfkit": "^0.13.0",
-		"qrcode": "^1.5.1"
+		"qrcode": "^1.5.1",
+		"serverless-http": "^3.0.3"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.3.3",
@@ -50,10 +51,10 @@
 		"qr"
 	],
 	"author": "Daniel R. Gray",
-	"url": "https://lgs.events",
+	"url": "https://behemothdan.dev/mqr",
 	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/users/behemothdan/projects/1"
 	},
-	"homepage": "https://github.com/users/behemothdan/projects/1"
+	"homepage": "."
 }
