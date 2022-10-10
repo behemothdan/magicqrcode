@@ -126,7 +126,7 @@ describe("Testing generateqr endpoints", () => {
 				]
 			})
 			.end((_err, res) => {
-				expect(res.text).to.equal("No QR codes were generated. Please check the URLs and try again.");
+				expect(res.body).to.have.property('feedback','No QR codes were generated. Please check the URLs and try again.');
 				done();
 			});
 	})
@@ -150,7 +150,7 @@ describe("Testing generateqr endpoints", () => {
 				]
 			})
 			.end((_err, res) => {
-				expect(res.text).to.equal("No QR codes were generated. Please check the URLs and try again.");
+				expect(res.body).to.have.property('feedback','No QR codes were generated. Please check the URLs and try again.');
 				done();
 			});
 	})

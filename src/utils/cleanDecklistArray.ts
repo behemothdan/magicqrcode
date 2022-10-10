@@ -10,5 +10,9 @@ import { qrrequest } from "../types/qrrequest";
  * @returns Array of deck lists after removing entries with invalid URLs
  */
 export function cleanDecklistArray(decklistArray: any[]) {
-	return decklistArray.filter((deckInfo: qrrequest) => validateUrls(deckInfo.url) !== null);
+	if(decklistArray !== null) {
+		return decklistArray.filter((deckInfo: qrrequest) => validateUrls(deckInfo.url) !== null);
+	} else {
+		return null;
+	}
 }

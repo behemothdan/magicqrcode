@@ -5,6 +5,9 @@ provider:
   stage: dev
   region: us-west-1
   memorySize: 128
+  apiGateway:
+    binaryMediaType:
+      - "*/*"
 functions:
   app:
     handler: src/server.handler
@@ -12,8 +15,6 @@ functions:
       - http:
           path: /
           method: ANY
-          cors: true
       - http:
           path: /{proxy+}
           method: ANY
-          cors: true

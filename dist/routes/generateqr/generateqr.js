@@ -30,22 +30,26 @@ router
     const qrCodeDoc = new pdfkit_1.default({ size: 'LETTER', margin: 15, bufferPages: true });
     let numberOfValidUrls = 0;
     const cleanedDecklists = (0, utils_1.cleanDecklistArray)(req.body.decklists);
-    yield Promise.all(cleanedDecklists.map((deckInfo, index) => __awaiter(void 0, void 0, void 0, function* () {
-        if ((0, utils_1.validateUrls)(deckInfo.url) !== null) {
-            yield qrcode_1.default.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {
-                if ((144 + qrCodeDoc.y + qrCodeDoc.currentLineHeight(true)) > 890) {
-                    qrCodeDoc.addPage();
-                    qrCodeDoc.on('pageAdded', () => qrCodeDoc.switchToPage(qrCodeDoc.bufferedPageRange().count - 1));
-                }
-                qrCodeDoc.image(url, (0, utils_1.calculateHorizontalPlacement)(index), (0, utils_1.calculateVerticalPlacement)(index), { fit: [144, 144] })
-                    .fillColor(deckInfo.color ? deckInfo.color : "#000000")
-                    .text((deckInfo.commander ? deckInfo.commander : ""), (0, utils_1.calculateHorizontalPlacement)(index), (0, utils_1.calculateVerticalPlacement)(index, true), { width: 144, align: 'center' });
-                numberOfValidUrls++;
-            });
-        }
-    })));
+    if (cleanedDecklists !== null) {
+        yield Promise.all(cleanedDecklists.map((deckInfo, index) => __awaiter(void 0, void 0, void 0, function* () {
+            if ((0, utils_1.validateUrls)(deckInfo.url) !== null) {
+                yield qrcode_1.default.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {
+                    if ((144 + qrCodeDoc.y + qrCodeDoc.currentLineHeight(true)) > 890) {
+                        qrCodeDoc.addPage();
+                        qrCodeDoc.on('pageAdded', () => qrCodeDoc.switchToPage(qrCodeDoc.bufferedPageRange().count - 1));
+                    }
+                    qrCodeDoc.image(url, (0, utils_1.calculateHorizontalPlacement)(index), (0, utils_1.calculateVerticalPlacement)(index), { fit: [144, 144] })
+                        .fillColor(deckInfo.color ? deckInfo.color : "#000000")
+                        .text((deckInfo.commander ? deckInfo.commander : ""), (0, utils_1.calculateHorizontalPlacement)(index), (0, utils_1.calculateVerticalPlacement)(index, true), { width: 144, align: 'center' });
+                    numberOfValidUrls++;
+                });
+            }
+        })));
+    }
     if (numberOfValidUrls > 0) {
         const stream = res.writeHead(200, {
+            'Access-Control-Allow-Methods': "GET,HEAD,OPTIONS,POST",
+            'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/pdf',
             'Content-disposition': `attachment;filename:magicqrcodes.pdf`
         });
