@@ -5,9 +5,6 @@ provider:
   stage: dev
   region: us-west-1
   memorySize: 128
-  apiGateway:
-    binaryMediaType:
-      - "*/*"
 functions:
   app:
     handler: src/server.handler
