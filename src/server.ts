@@ -84,9 +84,9 @@ export default server;
 
 module.exports.handler = serverless(app, {
 	/**
-	 * At the moment, this appears to have worked for at least a UI
-	 * running locally and hitting it from Insomnia. Redeploying the
-	 * UI to see if I have unstaged changes.
+	 * This was the last piece needed to get a streaming PDF to work
+	 * when being sent back to the end-user. Refer to the readme which
+	 * I am definitely about to updatea with the entire set-up process.
 	 */
 	binary: ['application/pdf', 'application/json']
 });
