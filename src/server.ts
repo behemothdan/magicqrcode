@@ -2,7 +2,7 @@ import compression from "compression";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-// import serverless from 'serverless-http';
+import serverless from 'serverless-http';
 
 /**
  * Define our application and the
@@ -82,4 +82,11 @@ const server = app.listen(port, (): void =>
 );
 export default server;
 
-// export default module.exports.handler = serverless(app);
+module.exports.handler = serverless(app, {
+	/**
+	 * At the moment, this appears to have worked for at least a UI
+	 * running locally and hitting it from Insomnia. Redeploying the
+	 * UI to see if I have unstaged changes.
+	 */
+	binary: ['application/pdf', 'application/json']
+});
