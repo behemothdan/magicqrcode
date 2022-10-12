@@ -43,11 +43,16 @@ router
 		 * Loop over each submitted decklist link
 		 * and generate individual QR codes for each one.
 		 * Remember that forEach loops are bad for async code.
-		 * So we use this map instead.
+		 * So we use this map instead. We also cap the number of
+		 * decks per session to 16, which is one page. Anything
+		 * more than that and the UI gets unwieldy.
 		 */
 		if (cleanedDecklists !== null) {
 			await Promise.all(cleanedDecklists.map(async (deckInfo: qrrequest, index: number) => {
-				if (validateUrls(deckInfo.url) !== null) {
+				/**
+				 * Check for valid URLs and make sure we don't parse more than 16 URLs.
+				 */
+				if (validateUrls(deckInfo.url) !== null && index <= 15) {
 					await qrcode.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {
 						/**
 						 * This handles moving to multiple pages if the QR code is going to get
