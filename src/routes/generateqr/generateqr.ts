@@ -66,17 +66,19 @@ router
 						 * Place the generated QR code on the page as well as line up the optional
 						 * text information along with the appropriate QR code, using our placement
 						 * functions to determine where they should live on the page to create
-						 * an optimized sheet for printing.
+						 * an optimized sheet for printing. We also cap the deck title length to
+						 * 50 characters to make sure the page prints properly without the title
+						 * overlapping the lower QR codes.
 						 */
 						qrCodeDoc.image(url,
 							calculateHorizontalPlacement(index),
 							calculateVerticalPlacement(index),
 							{ fit: [144, 144] })
 							.fillColor(deckInfo.color ? deckInfo.color : "#000000")
-							.text((deckInfo.commander ? deckInfo.commander : ""),
+							.text((deckInfo.commander ? deckInfo.commander.slice(0,50) : ""),
 								calculateHorizontalPlacement(index),
 								calculateVerticalPlacement(index, true),
-								{ width: 144, align: 'center' });
+								{ width: 140, align: 'center' });
 						numberOfValidUrls++;
 					})
 				}
