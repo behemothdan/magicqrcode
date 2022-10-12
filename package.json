@@ -1,7 +1,7 @@
 {
 	"name": "magicqrcode",
 	"version": "1.0.0",
-	"description": "The API used to generate printable QR codes for Magic deck links..",
+	"description": "The API used to generate printable QR codes for Magic deck links.",
 	"dependencies": {
 		"compression": "^1.7.4",
 		"cors": "^2.8.5",
@@ -9,7 +9,8 @@
 		"express": "^4.18.1",
 		"nodemon": "^2.0.19",
 		"pdfkit": "^0.13.0",
-		"qrcode": "^1.5.1"
+		"qrcode": "^1.5.1",
+		"serverless-http": "^3.0.3"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.3.3",
@@ -49,10 +50,10 @@
 		"qr"
 	],
 	"author": "Daniel R. Gray",
-	"url": "https://lgs.events",
-	"license": "ISC",
+	"url": "https://behemothdan.dev/mqr",
+	"license": "GPL-3.0-or-later",
 	"bugs": {
-		"url": "https://github.com/behemothdan/magicqrcode/issues"
+		"url": "https://github.com/users/behemothdan/projects/1"
 	},
-	"homepage": "https://github.com/behemothdan/magicqrcode/wiki"
+	"homepage": "."
 }

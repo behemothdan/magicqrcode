@@ -13,3 +13,7 @@ export {
 export {
 	calculateVerticalPlacement
 } from './verticalPlacement'
+
+export {
+	cleanDecklistArray
+} from './cleanDecklistArray'

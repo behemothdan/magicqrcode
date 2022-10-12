@@ -2,6 +2,7 @@ import { qrrequest } from "../../types/qrrequest";
 import {
 	calculateHorizontalPlacement,
 	calculateVerticalPlacement,
+	cleanDecklistArray,
 	feedbackMessages,
 	validateUrls
 } from '../../utils';
@@ -31,45 +32,58 @@ router
 		 * valid URL and was successfully added to a PDF. If all of them fail, then this
 		 * number will remain zero and return the message about no QR codes.
 		 */
-		let numberOfValidUrls: number = 0;
-		let numberOfInvalidUrls: number = 0;
+		let numberOfValidUrls = 0;
+
+		/**
+		 * Cleans the body of the POST request by calling our helper function cleanDecklistArray
+		 */
+		const cleanedDecklists = cleanDecklistArray(req.body.decklists);
 
 		/**
 		 * Loop over each submitted decklist link
 		 * and generate individual QR codes for each one.
 		 * Remember that forEach loops are bad for async code.
-		 * So we use this map instead.
+		 * So we use this map instead. We also cap the number of
+		 * decks per session to 16, which is one page. Anything
+		 * more than that and the UI gets unwieldy.
 		 */
-		await Promise.all(req.body.decklists.map(async (deckInfo: qrrequest, index: any) => {
-			if (validateUrls(deckInfo.url) !== null) {
-				await qrcode.toDataURL(deckInfo.url, {color: {dark: deckInfo.color}}).then(url => {
-					/**
-					 * This handles moving to multiple pages if the QR code is going to get
-					 * cut off on the bottom of the current page.
-					 */
-					if((144 + qrCodeDoc.y + qrCodeDoc.currentLineHeight(true)) > 890) {
-						qrCodeDoc.addPage();
-						qrCodeDoc.on('pageAdded', () => qrCodeDoc.switchToPage(qrCodeDoc.bufferedPageRange().count - 1));
-					}
-					/**
-					 * Place the generated QR code on the page as well as line up the optional
-					 * text information along with the appropriate QR code, using our placement
-					 * functions to determine where they should live on the page to create
-					 * an optimized sheet for printing.
-					 */
-					qrCodeDoc.image(url,
-						calculateHorizontalPlacement(index - numberOfInvalidUrls),
-						calculateVerticalPlacement(index - numberOfInvalidUrls),
-						{ fit: [144, 144] })
-					.fillColor(deckInfo.color ? deckInfo.color : "#000000")
-					.text((deckInfo.commander ? deckInfo.commander : ""),
-						calculateHorizontalPlacement(index - numberOfInvalidUrls),
-						calculateVerticalPlacement(index - numberOfInvalidUrls, true),
-						{ width: 144, align: 'center' });
+		if (cleanedDecklists !== null) {
+			await Promise.all(cleanedDecklists.map(async (deckInfo: qrrequest, index: number) => {
+				/**
+				 * Check for valid URLs and make sure we don't parse more than 16 URLs.
+				 */
+				if (validateUrls(deckInfo.url) !== null && index <= 15) {
+					await qrcode.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {
+						/**
+						 * This handles moving to multiple pages if the QR code is going to get
+						 * cut off on the bottom of the current page.
+						 */
+						if ((144 + qrCodeDoc.y + qrCodeDoc.currentLineHeight(true)) > 890) {
+							qrCodeDoc.addPage();
+							qrCodeDoc.on('pageAdded', () => qrCodeDoc.switchToPage(qrCodeDoc.bufferedPageRange().count - 1));
+						}
+						/**
+						 * Place the generated QR code on the page as well as line up the optional
+						 * text information along with the appropriate QR code, using our placement
+						 * functions to determine where they should live on the page to create
+						 * an optimized sheet for printing. We also cap the deck title length to
+						 * 50 characters to make sure the page prints properly without the title
+						 * overlapping the lower QR codes.
+						 */
+						qrCodeDoc.image(url,
+							calculateHorizontalPlacement(index),
+							calculateVerticalPlacement(index),
+							{ fit: [144, 144] })
+							.fillColor(deckInfo.color ? deckInfo.color : "#000000")
+							.text((deckInfo.commander ? deckInfo.commander.slice(0,50) : ""),
+								calculateHorizontalPlacement(index),
+								calculateVerticalPlacement(index, true),
+								{ width: 140, align: 'center' });
 						numberOfValidUrls++;
-				})
-			}
-		}))
+					})
+				}
+			}))
+		}
 
 		/**
 		 * We want to make sure we have a valid QR code before we send the
@@ -78,6 +92,8 @@ router
 		 */
 		if (numberOfValidUrls > 0) {
 			const stream = res.writeHead(200, {
+				'Access-Control-Allow-Methods': "GET,HEAD,OPTIONS,POST",
+				'Access-Control-Allow-Origin': '*',
 				'Content-Type': 'application/pdf',
 				'Content-disposition': `attachment;filename:magicqrcodes.pdf`
 			});
@@ -85,7 +101,8 @@ router
 			qrCodeDoc.on('end', () => stream.end());
 			qrCodeDoc.end();
 		} else {
-			res.send(feedbackMessages.noQrCodesGenerated);
+			res.statusMessage = "No QR codes generated";
+			res.status(200).send({ 'feedback': feedbackMessages.noQrCodesGenerated });
 		}
 	})
 

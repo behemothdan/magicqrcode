@@ -126,7 +126,42 @@ describe("Testing generateqr endpoints", () => {
 				]
 			})
 			.end((_err, res) => {
-				expect(res.text).to.equal("No QR codes were generated. Please check the URLs and try again.");
+				expect(res.body).to.have.property('feedback','No QR codes were generated. Please check the URLs and try again.');
+				done();
+			});
+	})
+	it("You posted multiple invalid URL to the generateqr endpoint", (done) => {
+		chai
+			.request(server)
+			.post("/api/v1/generateqr")
+			.set('content-type', 'application/json')
+			.send({
+				"decklists": [
+					{
+						"color": "#FF0000",
+						"commander": "Yawgmoth, Thran Physician",
+						"url": "hahaIamnotaURL"
+					},
+					{
+						"color": "#0000FF",
+						"commander": "Sisay and Jeggy",
+						"url": "I am not a URL and I have spaces!"
+					}
+				]
+			})
+			.end((_err, res) => {
+				expect(res.body).to.have.property('feedback','No QR codes were generated. Please check the URLs and try again.');
+				done();
+			});
+	})
+	it("You posted a non-decklist URL to the generateqr endpoint", (done) => {
+		chai
+			.request(server)
+			.post("/api/v1/generateqr")
+			.set('content-type', 'application/json')
+			.send({ "decklists": [{ "url": "https://www.google.com/decks/jAS0WPfBt0CKyATKXvMS0g" }] })
+			.end((_err, res) => {
+				expect(res.body).to.have.property('feedback','No QR codes were generated. Please check the URLs and try again.');
 				done();
 			});
 	})

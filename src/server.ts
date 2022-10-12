@@ -2,6 +2,7 @@ import compression from "compression";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import serverless from 'serverless-http';
 
 /**
  * Define our application and the
@@ -15,7 +16,7 @@ dotenv.config();
  * Approved domains to access the API.
  * Add whatever domains you want to allow.
  */
-const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:3001", "https://mqr.behemothdan.dev"];
 
 /**
  * This uses the above array of domains and validates
@@ -50,11 +51,6 @@ app.use(express.json());
  */
 app.use(compression());
 
-/**
- * Get the desired port from the env file or fallback
- * to port 8080 if it does not exist.
- */
-const port = process.env.PORT || 8080;
 const router = express.Router();
 
 /**
@@ -74,9 +70,23 @@ router.use("/", routes);
  */
 app.use("/api/v1/", router);
 
+/**
+ * Get the desired port from the env file or fallback
+ * to port 8080 if it does not exist.
+ */
+const port = process.env.PORT || 8080;
+
 const server = app.listen(port, (): void =>
 	// tslint:disable-next-line:no-console
 	console.log(`🚀: API ready at http://localhost:${port}`)
 );
-
 export default server;
+
+module.exports.handler = serverless(app, {
+	/**
+	 * This was the last piece needed to get a streaming PDF to work
+	 * when being sent back to the end-user. Refer to the readme which
+	 * I am definitely about to updatea with the entire set-up process.
+	 */
+	binary: ['application/pdf', 'application/json']
+});

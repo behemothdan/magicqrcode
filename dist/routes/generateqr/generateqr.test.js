@@ -26,7 +26,24 @@ describe("Testing generateqr endpoints", () => {
             .request(server_1.default)
             .post("/api/v1/generateqr")
             .set('content-type', 'application/json')
-            .send({ "url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g" })
+            .send({ "decklists": [{ "url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g" }] })
+            .end((_err, res) => {
+            expect(res).to.have.status(200);
+            done();
+        });
+    });
+    it("You posted a valid URL to the generateqr endpoint with optional fields", (done) => {
+        chai_1.default
+            .request(server_1.default)
+            .post("/api/v1/generateqr")
+            .set('content-type', 'application/json')
+            .send({
+            "decklists": [{
+                    "color": "#FF0000",
+                    "commander": "Yawgmoth",
+                    "url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g",
+                }]
+        })
             .end((_err, res) => {
             expect(res).to.have.status(200);
             done();
@@ -37,18 +54,53 @@ describe("Testing generateqr endpoints", () => {
             .request(server_1.default)
             .post("/api/v1/generateqr")
             .set('content-type', 'application/json')
-            .send({ "url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g,https://www.moxfield.com/decks/qYImBuPX8Ee2256k0kGI5Q,https://www.moxfield.com/decks/FLgGtSxE1U60V4mLbBPSLw" })
+            .send({
+            "decklists": [
+                {
+                    "commander": "Yawgmoth, Thran Physician",
+                    "url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g",
+                },
+                {
+                    "commander": "Sisay and Jeggy",
+                    "url": "https://www.moxfield.com/decks/FLgGtSxE1U60V4mLbBPSLw",
+                },
+                {
+                    "commander": "Urza",
+                    "url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g",
+                },
+                {
+                    "commander": "Borborygmos Enraged",
+                    "url": "https://www.moxfield.com/decks/15HMKmz_Xkae-l9LbuT83A",
+                },
+                {
+                    "commander": "Muerta a la Corona",
+                    "url": "https://www.moxfield.com/decks/AVaU-zNgL0KXWJgouAVZvg",
+                }
+            ]
+        })
             .end((_err, res) => {
             expect(res).to.have.status(200);
             done();
         });
     });
-    it("You posted multiple valid URLs and an invalid URL to the generateqr endpoint", (done) => {
+    it("You posted a valid URL and an invalid URL to the generateqr endpoint", (done) => {
         chai_1.default
             .request(server_1.default)
             .post("/api/v1/generateqr")
             .set('content-type', 'application/json')
-            .send({ "url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g,https://www.moxfield.com/decks/qYImBuPX8Ee2256k0kGI5Q,https://www.moxfield.com/decks/FLgGtSxE1U60V4mLbBPSLw,notavalidurl" })
+            .send({
+            "decklists": [
+                {
+                    "color": "#FF0000",
+                    "commander": "A Broken Commander",
+                    "url": "hahaIamnotaURL"
+                },
+                {
+                    "commander": "Yawgmoth, Thran Physician",
+                    "url": "https://www.moxfield.com/decks/jAS0WPfBt0CKyATKXvMS0g"
+                }
+            ]
+        })
             .end((_err, res) => {
             expect(res).to.have.status(200);
             done();
@@ -59,9 +111,41 @@ describe("Testing generateqr endpoints", () => {
             .request(server_1.default)
             .post("/api/v1/generateqr")
             .set('content-type', 'application/json')
-            .send({ "url": "not-a-valid-url" })
+            .send({
+            "decklists": [
+                {
+                    "color": "#FF0000",
+                    "commander": "Yawgmoth, Thran Physician",
+                    "url": "hahaIamnotaURL"
+                }
+            ]
+        })
             .end((_err, res) => {
-            expect(res.text).to.equal("No QR codes generated.");
+            expect(res.body).to.have.property('feedback', 'No QR codes were generated. Please check the URLs and try again.');
+            done();
+        });
+    });
+    it("You posted multiple invalid URL to the generateqr endpoint", (done) => {
+        chai_1.default
+            .request(server_1.default)
+            .post("/api/v1/generateqr")
+            .set('content-type', 'application/json')
+            .send({
+            "decklists": [
+                {
+                    "color": "#FF0000",
+                    "commander": "Yawgmoth, Thran Physician",
+                    "url": "hahaIamnotaURL"
+                },
+                {
+                    "color": "#0000FF",
+                    "commander": "Sisay and Jeggy",
+                    "url": "I am not a URL and I have spaces!"
+                }
+            ]
+        })
+            .end((_err, res) => {
+            expect(res.body).to.have.property('feedback', 'No QR codes were generated. Please check the URLs and try again.');
             done();
         });
     });
