@@ -154,4 +154,15 @@ describe("Testing generateqr endpoints", () => {
 				done();
 			});
 	})
+	it("You posted a non-decklist URL to the generateqr endpoint", (done) => {
+		chai
+			.request(server)
+			.post("/api/v1/generateqr")
+			.set('content-type', 'application/json')
+			.send({ "decklists": [{ "url": "https://www.google.com/decks/jAS0WPfBt0CKyATKXvMS0g" }] })
+			.end((_err, res) => {
+				expect(res.body).to.have.property('feedback','No QR codes were generated. Please check the URLs and try again.');
+				done();
+			});
+	})
 });
