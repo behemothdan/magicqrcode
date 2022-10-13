@@ -32,7 +32,7 @@ router
     const cleanedDecklists = (0, utils_1.cleanDecklistArray)(req.body.decklists);
     if (cleanedDecklists !== null) {
         yield Promise.all(cleanedDecklists.map((deckInfo, index) => __awaiter(void 0, void 0, void 0, function* () {
-            if ((0, utils_1.validateUrls)(deckInfo.url) !== null) {
+            if ((0, utils_1.validateUrls)(deckInfo.url) !== null && index <= 15) {
                 yield qrcode_1.default.toDataURL(deckInfo.url, { color: { dark: deckInfo.color } }).then(url => {
                     if ((144 + qrCodeDoc.y + qrCodeDoc.currentLineHeight(true)) > 890) {
                         qrCodeDoc.addPage();
@@ -40,7 +40,7 @@ router
                     }
                     qrCodeDoc.image(url, (0, utils_1.calculateHorizontalPlacement)(index), (0, utils_1.calculateVerticalPlacement)(index), { fit: [144, 144] })
                         .fillColor(deckInfo.color ? deckInfo.color : "#000000")
-                        .text((deckInfo.commander ? deckInfo.commander : ""), (0, utils_1.calculateHorizontalPlacement)(index), (0, utils_1.calculateVerticalPlacement)(index, true), { width: 144, align: 'center' });
+                        .text((deckInfo.commander ? deckInfo.commander.slice(0, 50) : ""), (0, utils_1.calculateHorizontalPlacement)(index), (0, utils_1.calculateVerticalPlacement)(index, true), { width: 140, align: 'center' });
                     numberOfValidUrls++;
                 });
             }
