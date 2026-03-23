@@ -47,6 +47,7 @@ router
         })));
     }
     if (numberOfValidUrls > 0) {
+        console.log(numberOfValidUrls);
         const stream = res.writeHead(200, {
             'Access-Control-Allow-Methods': "GET,HEAD,OPTIONS,POST",
             'Access-Control-Allow-Origin': '*',

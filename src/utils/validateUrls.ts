@@ -17,7 +17,7 @@ export function validateUrls(str: string) {
 	 * since it's a way to reduce computational power in our AWS environment
 	 * and reduce the likelihood of us hitting our spending cap we put in place.
 	 */
-	const approvedDomains = ["www.moxfield.com", "www.archidekt.com", "tappedout.net"];
+	const approvedDomains = ["www.moxfield.com", "www.archidekt.com", "tappedout.net", "moxfield.com"];
 
 	/**
 	 * If the URL is a valid URL and is contained within the above array
